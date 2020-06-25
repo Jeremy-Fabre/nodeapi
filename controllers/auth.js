@@ -10,14 +10,25 @@ dotenv.config();
 
 
 exports.signup = async (req, res) => {
-    const userExists = await User.findOne({email: req.body.email});
+    const userExists = await User.findOne({ email: req.body.email });
+    
     if(userExists) 
         return res.status(403).json({
             error: "Email is taken !"
         });
+
     const user = await new User(req.body);
+    const emailData = {
+        from: "noreply@node-react.com",
+        to: req.body.email,
+        subject: "Welcome to GMRZ AREA !",
+        text: `Welcome on the new social network for gamerz !`,
+        html: `<p> Welcome ${req.body.name} ! Enjoy the new social network for gamerz ! </p>`
+    };
+
     await user.save();
-    res.status(200).json({message: "Signup success! Please login." });
+    res.status(200).json({message: "Signup success! Please login." })
+    .then(sendEmail(emailData));
 };
 
 exports.signin = (req, res) => {
@@ -136,39 +147,3 @@ exports.resetPassword = (req, res) => {
         });
     });
 };
-
-// exports.socialLogin = (req, res) => {
-//     // try signup by finding user with req.email
-//     let user = User.findOne({ email: req.body.email }, (err, user) => {
-//         if (err || !user) {
-//             // create a new user and login
-//             user = new User(req.body);
-//             req.profile = user;
-//             user.save();
-//             // generate a token with user id and secret
-//             const token = jwt.sign(
-//                 { _id: user._id, iss: "NODEAPI" },
-//                 process.env.JWT_SECRET
-//             );
-//             res.cookie("t", token, { expire: new Date() + 9999 });
-//             // return response with user and token to frontend client
-//             const { _id, name, email } = user;
-//             return res.json({ token, user: { _id, name, email } });
-//         } else {
-//             // update existing user with new social info and login
-//             req.profile = user;
-//             user = _.extend(user, req.body);
-//             user.updated = Date.now();
-//             user.save();
-//             // generate a token with user id and secret
-//             const token = jwt.sign(
-//                 { _id: user._id, iss: "NODEAPI" },
-//                 process.env.JWT_SECRET
-//             );
-//             res.cookie("t", token, { expire: new Date() + 9999 });
-//             // return response with user and token to frontend client
-//             const { _id, name, email } = user;
-//             return res.json({ token, user: { _id, name, email } });
-//         }
-//     });
-// };

@@ -4,8 +4,7 @@ const {
     signin, 
     signout,
     forgotPassword,
-    resetPassword,
-    //socialLogin
+    resetPassword
 } = require('../controllers/auth');
 const { userById } = require('../controllers/user');
 const { userSignupValidator, passwordResetValidator } = require('../validator');
@@ -17,7 +16,6 @@ router.post('/signin', signin);
 router.get('/signout', signout);
 router.put("/forgot-password", forgotPassword);
 router.put("/reset-password", passwordResetValidator, resetPassword);
-//router.post("/social-login", socialLogin);
 
 // Any route containing :userId, our app will first execute userByID
 router.param("userId", userById);

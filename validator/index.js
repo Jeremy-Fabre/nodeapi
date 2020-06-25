@@ -25,8 +25,8 @@ exports.createPostValidator = (req, res, next) => {
 };
 
 exports.userSignupValidator = (req, res, next) => {
-    // Name is not null and betwwen 4-10 characters
-    req.check("name", "Name is required").notEmpty();
+    // name is not null and betwwen 4-10 characters
+    req.check("name", "name is required").notEmpty();
 
     // Email is not null, valid and normalized
     req.check("email", "Email must be between 3 to 32 characters")
