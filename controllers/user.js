@@ -2,6 +2,7 @@ const _ = require('lodash');
 const User = require('../models/user');
 const formidable = require('formidable');
 const fs = require('fs');
+const { sendEmail } = require("../helpers");
 
 exports.userById = (req, res, next, id) => {
     User.findById(id)
@@ -50,22 +51,6 @@ exports.getUser = (req, res) => {
     return res.json(req.profile);
 };
 
-// exports.updateUser = (req, res, next) => {
-//     let user = req.profile;
-//     user = _.extend(user, req.body); // extend - mutate the source object
-//     user.updated = Date.now();
-//     user.save((err) => {
-//         if(err) {
-//             return res.status(400).json({
-//                 error: "You are not authorized to perform this action"
-//             });
-//         };
-//         user.hashed_password = undefined;
-//         user.salt = undefined;
-//         res.json({user})
-//     });
-// };
-
 exports.updateUser = (req, res, next) => {
     let form = new formidable.IncomingForm()
     form.keepExtensions = true
@@ -98,12 +83,14 @@ exports.updateUser = (req, res, next) => {
     });
 };
 
-exports.userPhoto = (req, res, next) => {
+exports.userPhoto = (req, res) => {
     if(req.profile.photo.data) {
         res.set("Content-Type", req.profile.photo.contentType);
         return res.send(req.profile.photo.data);
+    } else {
+        res.set("Content-Type", req.profile.photo.contentType);
+        return res.send(req.profile.photo.data);
     }
-    next();
 };
 
 exports.deleteUser = (req, res, next) => {
@@ -196,3 +183,29 @@ exports.findPeople = (req, res) => {
         res.json(users);
     }).select("name");
 };
+
+exports.myFollowing = (req, res) => {
+    let following = req.profile.following;
+    User.find({_id: following}, (err, users) => {
+        if(err) {
+            return res.status(400).json({
+                error: err
+            });
+        }; 
+        res.json(users);
+    }).select("name");
+};
+
+// exports.followingRequest = (req, res) => {
+
+//     const emailData = {
+//         from: "noreply@node-react.com",
+//         to: req.profile.email,
+//         subject: `${req.profile.name} ask you to follow him on GMRZ AREA`,
+//         text: `An e`,
+//         html: `<p>Hello there, <br/> ${req.profile.name} ask you to follow him on GMRZ AREA ! <br/> <a href="http://167.172.32.36/user/${req.profile._id}">GO</a> </p>`
+//     };
+
+//     res.status(200).json({message: "Mail has been send succesfully !" })
+//     .then(sendEmail(emailData));
+// }
