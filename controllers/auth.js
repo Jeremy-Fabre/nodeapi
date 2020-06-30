@@ -96,8 +96,8 @@ exports.forgotPassword = (req, res) => {
             from: "noreply@node-react.com",
             to: email,
             subject: "Password Reset Instructions",
-            text: `Please use the following link to reset your password: http://localhost:8080/reset-password/${token}`,
-            html: `<p>Please use the following link to reset your password:</p> <p>http://localhost:8080/reset-password/${token}</p>`
+            text: `Please use the following link to reset your password: http://167.172.32.36/reset-password/${token}`,
+            html: `<p>Please use the following link to reset your password:</p> <p>http://167.172.32.36/reset-password/${token}</p>`
         };
  
         return user.updateOne({ resetPasswordLink: token }, (err, success) => {
